@@ -62,7 +62,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
   end
 
   it 'creates the resources' do
-    command = if fact('osfamily') == 'RedHat'
+    command = if fact('default_provider') == 'pcs'
                 'pcs resource show'
               else
                 'crm_resource --list'

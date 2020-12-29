@@ -16,6 +16,30 @@ configure_beaker do |host|
   end
 end
 
+case fact_on(host, 'os.family')
+when 'RedHat'
+  default_provider = 'pcs'
+when 'Debian'
+  case fact_on(host, 'os.name')
+  when 'Debian'
+    if fact_on(host, 'operatingsystemmajrelease') > 9
+      default_provider = 'pcs'
+    else
+      default_provider = 'crm'
+    end
+  when 'Ubuntu'
+    if fact_on(host, 'operatingsystemmajrelease') > 14
+      default_provider = 'pcs'
+    else
+      default_provider = 'crm'
+    end
+  end
+when 'Suse'
+  default_provider = 'crm'
+end
+
+add_custom_fact :default_provider, default_provider
+
 def cleanup_cs_resources
   pp = <<-EOS
       resources { 'cs_clone' :
