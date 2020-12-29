@@ -229,7 +229,7 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
     end
 
     if @property_hash[:existing_resource] == :false || force_reinstall == :true
-      [command(:pcs), pcs_subcommand, 'create', '--force', '--no-default-ops', (@property_hash[:name]).to_s]
+      cmd = [command(:pcs), pcs_subcommand, 'create', '--force', '--no-default-ops', (@property_hash[:name]).to_s]
       cmd << resource_type
       cmd += parameters unless parameters.nil?
       cmd += operations unless operations.nil?
