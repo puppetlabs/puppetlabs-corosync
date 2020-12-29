@@ -40,7 +40,7 @@ class corosync::params {
     'Debian': {
       case $facts['os']['name'] {
         'Debian': {
-          if $facts['os']['release']['major'] > 9 {
+          if Numeric($facts['os']['release']['major']) > 9 {
             $package_crmsh = false
             $package_pcs = true
             $package_fence_agents = false
@@ -53,7 +53,7 @@ class corosync::params {
           }
         }
         'Ubuntu': {
-          if $facts['os']['release']['major'] > 14 {
+          if Numeric($facts['os']['release']['major']) > 14 {
             $package_crmsh = false
             $package_pcs = true
             $package_fence_agents = false
