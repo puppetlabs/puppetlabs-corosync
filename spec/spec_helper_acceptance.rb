@@ -16,19 +16,19 @@ configure_beaker do |host|
   end
 end
 
-case fact_on(host, 'os.family')
+case fact('os.family')
 when 'RedHat'
   default_provider = 'pcs'
 when 'Debian'
-  case fact_on(host, 'os.name')
+  case fact('os.name')
   when 'Debian'
-    if fact_on(host, 'operatingsystemmajrelease') > 9
+    if fact('operatingsystemmajrelease') > 9
       default_provider = 'pcs'
     else
       default_provider = 'crm'
     end
   when 'Ubuntu'
-    if fact_on(host, 'operatingsystemmajrelease') > 14
+    if fact('operatingsystemmajrelease') > 14
       default_provider = 'pcs'
     else
       default_provider = 'crm'
