@@ -4,27 +4,42 @@ configure_beaker do |host|
   case fact_on(host, 'os.family')
   when 'RedHat'
     default_provider = 'pcs'
+    if fact_on(host, 'os.release.major').to_i > 6
+      pcs_version = '0.10.0'
+    else
+      pcs_version = '0.9.0'
+    end
   when 'Debian'
     case fact_on(host, 'os.name')
     when 'Debian'
-      if fact_on(host, 'operatingsystemmajrelease').to_i > 9
+      if fact_on(host, 'os.release.major').to_i > 9
         default_provider = 'pcs'
+        pcs_version = '0.10.0'
       else
         default_provider = 'crm'
+        pcs_version = 'undef'
       end
     when 'Ubuntu'
-      if fact_on(host, 'operatingsystemmajrelease').to_i > 14
+      if fact_on(host, 'os.release.major').to_i > 18
         default_provider = 'pcs'
+        pcs_version = '0.10.0'
+      elsif fact_on(host, 'os.release.major').to_i > 14
+        default_provider = 'pcs'
+        pcs_version = '0.9.0'
       else
         default_provider = 'crm'
+        pcs_version = 'undef'
       end
     end
   when 'Suse'
     default_provider = 'crm'
+    pcs_version = 'undef'
   else
     default_provider = 'crm'
+    pcs_version = 'undef'
   end
   on host, "echo default_provider=#{default_provider} > /opt/puppetlabs/facter/facts.d/pacemaker-provider.txt"
+  on host, "echo pcs_version=#{pcs_version} > /opt/puppetlabs/facter/facts.d/pacemaker-provider.txt"
   # On Debian-based, service state transitions (restart, stop) hang indefinitely and
   # lead to test timeouts if there is a service unit of Type=notify involved.
   # Use Type=simple as a workaround. See issue 455.
