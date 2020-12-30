@@ -7,13 +7,13 @@ configure_beaker do |host|
   when 'Debian'
     case fact_on(host, 'os.name')
     when 'Debian'
-      if fact_on(host, 'operatingsystemmajrelease') > 9
+      if fact_on(host, 'operatingsystemmajrelease').to_i > 9
         default_provider = 'pcs'
       else
         default_provider = 'crm'
       end
     when 'Ubuntu'
-      if fact_on(host, 'operatingsystemmajrelease') > 14
+      if fact_on(host, 'operatingsystemmajrelease').to_i > 14
         default_provider = 'pcs'
       else
         default_provider = 'crm'
