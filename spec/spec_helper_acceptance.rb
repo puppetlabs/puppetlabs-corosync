@@ -40,9 +40,6 @@ configure_beaker do |host|
   end
 end
 
-
-add_custom_fact :default_provider, default_provider
-
 def cleanup_cs_resources
   pp = <<-EOS
       resources { 'cs_clone' :
