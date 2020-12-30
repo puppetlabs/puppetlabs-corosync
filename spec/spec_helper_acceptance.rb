@@ -23,7 +23,7 @@ configure_beaker do |host|
       if fact_on(host, 'os.release.major').to_i > 18
         default_provider = 'pcs'
         pcs_version = '0.10.0'
-      elsif fact_on(host, 'os.release.major').to_i > 14
+      elsif fact_on(host, 'os.release.major').to_i > 16
         default_provider = 'pcs'
         pcs_version = '0.9.0'
       else
