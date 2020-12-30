@@ -236,10 +236,10 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
       cmd += utilization unless utilization.nil?
       cmd += metadatas unless metadatas.nil?
       self.class.run_command_in_cib(cmd, @resource[:cib])
-      # if we are using a master/slave resource, prepend ms_ before its name
-      # and declare it as a master/slave resource
+      # if we are using a multistate/promotable resource, prepend ms_ before its name
+      # and declare it as a multistate/promotable resource
       if @property_hash[:promotable] == :true
-        cmd = [command(:pcs), pcs_subcommand, 'master', "ms_#{@property_hash[:name]}", (@property_hash[:name]).to_s]
+        cmd = [command(:pcs), pcs_subcommand, 'promotable', "ms_#{@property_hash[:name]}", (@property_hash[:name]).to_s]
         unless @property_hash[:ms_metadata].empty?
           cmd << 'meta'
           @property_hash[:ms_metadata].each_pair do |k, v|
