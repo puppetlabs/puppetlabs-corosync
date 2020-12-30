@@ -78,7 +78,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'does not create the service resource in the cib' do
     command = if fact('default_provider') == 'pcs'
-                if fact('os.family') == 'RedHat' and fact('os.release.major').to_i < 8
+                if Gem::Version.new(fact('pcs_version')) < Gem::Version.new('0.10.0')
                   'pcs resource show'
                 else
                   'pcs resource status'
@@ -93,7 +93,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'does not create the vip resource in the cib' do
     command = if fact('default_provider') == 'pcs'
-                if fact('os.family') == 'RedHat' and fact('os.release.major').to_i < 8
+                if Gem::Version.new(fact('pcs_version')) < Gem::Version.new('0.10.0')
                   'pcs resource show'
                 else
                   'pcs resource status'
@@ -120,7 +120,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'creates the service resource in the shadow cib' do
     command = if fact('default_provider') == 'pcs'
-                if fact('os.family') == 'RedHat' and fact('os.release.major').to_i < 8
+                if Gem::Version.new(fact('pcs_version')) < Gem::Version.new('0.10.0')
                   "pcs resource show -f #{pcs_shadow_cib}"
                 else
                   "pcs resource status -f #{pcs_shadow_cib}"
@@ -135,7 +135,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'creates the vip resource in the shadow cib' do
     command = if fact('default_provider') == 'pcs'
-                if fact('os.family') == 'RedHat' and fact('os.release.major').to_i < 8
+                if Gem::Version.new(fact('pcs_version')) < Gem::Version.new('0.10.0')
                   "pcs resource show -f #{pcs_shadow_cib}"
                 else
                   "pcs resource status -f #{pcs_shadow_cib}"
