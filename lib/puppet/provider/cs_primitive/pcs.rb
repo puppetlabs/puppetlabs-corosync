@@ -239,7 +239,11 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
       # if we are using a multistate/promotable resource, prepend ms_ before its name
       # and declare it as a multistate/promotable resource
       if @property_hash[:promotable] == :true
-        cmd = [command(:pcs), pcs_subcommand, 'promotable', "ms_#{@property_hash[:name]}", (@property_hash[:name]).to_s]
+        if Gem::Version.new(self.version) < Gem::Version.new('0.10.0')
+          cmd = [command(:pcs), pcs_subcommand, 'promotable', (@property_hash[:name]).to_s]
+        else
+          cmd = [command(:pcs), pcs_subcommand, 'master', "ms_#{@property_hash[:name]}", (@property_hash[:name]).to_s]
+        end
         unless @property_hash[:ms_metadata].empty?
           cmd << 'meta'
           @property_hash[:ms_metadata].each_pair do |k, v|

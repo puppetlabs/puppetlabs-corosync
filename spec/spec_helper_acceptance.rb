@@ -39,7 +39,7 @@ configure_beaker do |host|
     pcs_version = 'undef'
   end
   on host, "echo default_provider=#{default_provider} > /opt/puppetlabs/facter/facts.d/pacemaker-provider.txt"
-  on host, "echo pcs_version=#{pcs_version} > /opt/puppetlabs/facter/facts.d/pacemaker-provider.txt"
+  on host, "echo pcs_version=#{pcs_version} >> /opt/puppetlabs/facter/facts.d/pacemaker-provider.txt"
   # On Debian-based, service state transitions (restart, stop) hang indefinitely and
   # lead to test timeouts if there is a service unit of Type=notify involved.
   # Use Type=simple as a workaround. See issue 455.

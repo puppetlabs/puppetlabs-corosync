@@ -99,4 +99,9 @@ class PuppetX::Voxpupuli::Corosync::Provider::Pcs < PuppetX::Voxpupuli::Corosync
     debug(@property_hash.inspect)
     !(@property_hash[:ensure] == :absent || @property_hash.empty?)
   end
+
+  def self.version
+    cmd = [command(:pcs), '--version']
+    Puppet::Util::Execution.execute(cmd, { failonfail: failonfail })
+  end
 end
