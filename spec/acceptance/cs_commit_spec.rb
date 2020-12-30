@@ -82,7 +82,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'creates the service resource in the cib' do
     command = if fact('default_provider') == 'pcs'
-                'pcs resource show'
+                'pcs resource status'
               else
                 'crm_resource --list'
               end
@@ -93,7 +93,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'creates the vip resource in the cib' do
     command = if fact('default_provider') == 'pcs'
-                'pcs resource show'
+                'pcs resource status'
               else
                 'crm_resource --list'
               end
@@ -126,7 +126,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'creates the vip resource in the shadow cib' do
     command = if fact('default_provider') == 'pcs'
-                "pcs resource show -f #{pcs_shadow_cib}"
+                "pcs resource status -f #{pcs_shadow_cib}"
               else
                 'CIB_shadow=puppet crm_resource --list'
               end
@@ -137,7 +137,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'creates the service resource in the shadow cib' do
     command = if fact('default_provider') == 'pcs'
-                "pcs resource show -f #{pcs_shadow_cib}"
+                "pcs resource status -f #{pcs_shadow_cib}"
               else
                 'CIB_shadow=puppet crm_resource --list'
               end
