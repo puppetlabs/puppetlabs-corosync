@@ -1,7 +1,30 @@
 require 'voxpupuli/acceptance/spec_helper_acceptance'
-require 'rspec-puppet-facts'
 
 configure_beaker do |host|
+  case fact_on(host, 'os.family')
+  when 'RedHat'
+    default_provider = 'pcs'
+  when 'Debian'
+    case fact_on(host, 'os.name')
+    when 'Debian'
+      if fact_on(host, 'operatingsystemmajrelease') > 9
+        default_provider = 'pcs'
+      else
+        default_provider = 'crm'
+      end
+    when 'Ubuntu'
+      if fact_on(host, 'operatingsystemmajrelease') > 14
+        default_provider = 'pcs'
+      else
+        default_provider = 'crm'
+      end
+    end
+  when 'Suse'
+    default_provider = 'crm'
+  else
+    default_provider = 'crm'
+  end
+  on host, "echo default_provider=#{default_provider} > /opt/puppetlabs/facter/facts.d/pacemaker-provider.txt"
   # On Debian-based, service state transitions (restart, stop) hang indefinitely and
   # lead to test timeouts if there is a service unit of Type=notify involved.
   # Use Type=simple as a workaround. See issue 455.
@@ -17,27 +40,6 @@ configure_beaker do |host|
   end
 end
 
-case fact('os.family')
-when 'RedHat'
-  default_provider = 'pcs'
-when 'Debian'
-  case fact('os.name')
-  when 'Debian'
-    if fact('operatingsystemmajrelease') > 9
-      default_provider = 'pcs'
-    else
-      default_provider = 'crm'
-    end
-  when 'Ubuntu'
-    if fact('operatingsystemmajrelease') > 14
-      default_provider = 'pcs'
-    else
-      default_provider = 'crm'
-    end
-  end
-when 'Suse'
-  default_provider = 'crm'
-end
 
 add_custom_fact :default_provider, default_provider
 
