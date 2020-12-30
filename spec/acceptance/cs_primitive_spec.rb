@@ -63,7 +63,11 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
 
   it 'creates the resources' do
     command = if fact('default_provider') == 'pcs'
-                'pcs resource status'
+                if fact('os.family') == 'RedHat' and fact('os.release.major').to_i < 8
+                  'pcs resource show'
+                else
+                  'pcs resource status'
+                end
               else
                 'crm_resource --list'
               end
