@@ -192,7 +192,7 @@ h           <primitive class="ocf" id="example_vip_with_op" provider="heartbeat"
     it 'sets operations' do
       instance.operations = [{ 'monitor' => { 'interval' => '20s' } }]
       expect_commands([
-                        %r{^pcs resource create --force testResource ocf:heartbeat:IPaddr2 op monitor interval=20s$},
+                        %r{^pcs resource create --force --no-default-ops testResource ocf:heartbeat:IPaddr2 op monitor interval=20s$},
                         %r{^pcs resource op remove testResource monitor interval=60s$}
                       ])
       instance.flush
@@ -200,30 +200,30 @@ h           <primitive class="ocf" id="example_vip_with_op" provider="heartbeat"
 
     it 'do not remove default operations if explicitely set' do
       instance.operations = [{ 'monitor' => { 'interval' => '60s' } }]
-      expect_commands(%r{^pcs resource create --force testResource ocf:heartbeat:IPaddr2 op monitor interval=60s$})
+      expect_commands(%r{^pcs resource create --force --no-default-ops testResource ocf:heartbeat:IPaddr2 op monitor interval=60s$})
       instance.flush
     end
 
     it 'sets utilization' do
       instance.utilization = { 'waffles' => '5' }
-      expect_commands(%r{^pcs resource create --force testResource ocf:heartbeat:IPaddr2 op .* utilization waffles=5$})
+      expect_commands(%r{^pcs resource create --force --no-default-ops testResource ocf:heartbeat:IPaddr2 op .* utilization waffles=5$})
       instance.flush
     end
 
     it 'sets parameters' do
       instance.parameters = { 'fluffyness' => '12' }
-      expect_commands(%r{^pcs resource create --force testResource ocf:heartbeat:IPaddr2 fluffyness=12 op.*})
+      expect_commands(%r{^pcs resource create --force --no-default-ops testResource ocf:heartbeat:IPaddr2 fluffyness=12 op.*})
       instance.flush
     end
 
     it 'sets metadata' do
       instance.metadata = { 'target-role' => 'Started' }
-      expect_commands(%r{^pcs resource create --force testResource ocf:heartbeat:IPaddr2 op .* meta target-role=Started$})
+      expect_commands(%r{^pcs resource create --force --no-default-ops testResource ocf:heartbeat:IPaddr2 op .* meta target-role=Started$})
       instance.flush
     end
 
     it 'sets the primitive name and type' do
-      expect_commands(%r{^pcs resource create --force testResource ocf:heartbeat:IPaddr2})
+      expect_commands(%r{^pcs resource create --force --no-default-ops testResource ocf:heartbeat:IPaddr2})
       instance.flush
     end
 
@@ -245,7 +245,7 @@ h           <primitive class="ocf" id="example_vip_with_op" provider="heartbeat"
       expect_commands([
                         %r{^pcs resource unclone example_vip$},
                         %r{^pcs resource delete --force example_vip$},
-                        %r{^pcs resource create --force example_vip systemd:heartbeat:IPaddr2},
+                        %r{^pcs resource create --force --no-default-ops example_vip systemd:heartbeat:IPaddr2},
                         %r{^pcs resource op remove example_vip monitor interval=60s$}
                       ])
       vip_instance.flush
@@ -256,7 +256,7 @@ h           <primitive class="ocf" id="example_vip_with_op" provider="heartbeat"
       expect_commands([
                         %r{^pcs resource unclone example_vip$},
                         %r{^pcs resource delete --force example_vip$},
-                        %r{^pcs resource create --force example_vip ocf:voxpupuli:IPaddr2},
+                        %r{^pcs resource create --force --no-default-ops example_vip ocf:voxpupuli:IPaddr2},
                         %r{^pcs resource op remove example_vip monitor interval=60s$}
                       ])
       vip_instance.flush
@@ -267,7 +267,7 @@ h           <primitive class="ocf" id="example_vip_with_op" provider="heartbeat"
       expect_commands([
                         %r{^pcs resource unclone example_vip$},
                         %r{^pcs resource delete --force example_vip$},
-                        %r{^pcs resource create --force example_vip ocf:heartbeat:IPaddr3},
+                        %r{^pcs resource create --force --no-default-ops example_vip ocf:heartbeat:IPaddr3},
                         %r{^pcs resource op remove example_vip monitor interval=60s$}
                       ])
       vip_instance.flush
@@ -280,7 +280,7 @@ h           <primitive class="ocf" id="example_vip_with_op" provider="heartbeat"
       expect_commands([
                         %r{^pcs resource unclone example_vip$},
                         %r{^pcs resource delete --force example_vip$},
-                        %r{^pcs resource create --force example_vip systemd:httpd},
+                        %r{^pcs resource create --force --no-default-ops example_vip systemd:httpd},
                         %r{^pcs resource op remove example_vip monitor interval=60s$}
                       ])
       vip_instance.flush
@@ -291,7 +291,7 @@ h           <primitive class="ocf" id="example_vip_with_op" provider="heartbeat"
       expect_commands([
                         %r{^pcs resource unclone example_vip$},
                         %r{^pcs resource delete --force example_vip$},
-                        %r{^pcs resource create --force example_vip},
+                        %r{^pcs resource create --force --no-default-ops example_vip},
                         %r{^pcs resource op remove example_vip monitor interval=60s$}
                       ])
       vip_instance.flush
