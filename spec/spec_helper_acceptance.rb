@@ -4,7 +4,7 @@ configure_beaker do |host|
   case fact_on(host, 'os.family')
   when 'RedHat'
     default_provider = 'pcs'
-    if fact_on(host, 'os.release.major').to_i > 6
+    if fact_on(host, 'os.release.major').to_i > 7
       pcs_version = '0.10.0'
     else
       pcs_version = '0.9.0'

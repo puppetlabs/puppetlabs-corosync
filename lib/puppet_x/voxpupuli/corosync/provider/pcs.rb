@@ -102,6 +102,6 @@ class PuppetX::Voxpupuli::Corosync::Provider::Pcs < PuppetX::Voxpupuli::Corosync
 
   def self.version
     cmd = [command(:pcs), '--version']
-    Puppet::Util::Execution.execute(cmd, { failonfail: failonfail })
+    Puppet::Util::Execution.execute(cmd, { failonfail: true })
   end
 end
