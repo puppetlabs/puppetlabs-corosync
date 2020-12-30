@@ -22,9 +22,9 @@ J76GtqoIOh+CTeY/BMwBotdQdgeR0zvjE9FuLWkhTmRtVFhbVIzJbFlFuYq5d3LH
 NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
   File.open('/tmp/ca.pem', 'w') { |f| f.write(cert) }
   promotable_metadata_name = if Gem::Version.new(fact('pcs_version')) < Gem::Version.new('0.10.0')
-    master
+    'master'
   else
-    promotable
+    'promotable'
   end
   it 'with defaults' do
     pp = <<-EOS
