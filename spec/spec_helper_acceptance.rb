@@ -1,5 +1,5 @@
 require 'voxpupuli/acceptance/spec_helper_acceptance'
-require 'voxpupuli/test/spec_helper'
+require 'rspec-puppet-facts'
 
 configure_beaker do |host|
   # On Debian-based, service state transitions (restart, stop) hang indefinitely and
