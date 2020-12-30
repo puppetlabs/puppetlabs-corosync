@@ -115,7 +115,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
   end
 
   it 'creates the cib and a shadow cib' do
-    if fact('osfamily') == 'RedHat'
+    if fact('default_provider') == 'pcs'
       shell('pcs cluster cib')
       shell("pcs cluster cib -f #{pcs_shadow_cib}")
     else
