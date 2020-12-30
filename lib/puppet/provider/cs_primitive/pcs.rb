@@ -143,7 +143,7 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
     when :false
       @property_hash[:promotable] = should
       if Gem::Version.new(self.class.version) >= Gem::Version.new('0.10.0')
-        self.class.run_command_in_cib([command(:pcs), 'resource', 'delete', "#{@resource[:name]}"], @resource[:cib])
+        self.class.run_command_in_cib([command(:pcs), 'resource', 'delete', "#{@resource[:name]}"]-clone, @resource[:cib])
       else
         self.class.run_command_in_cib([command(:pcs), 'resource', 'delete', "ms_#{@resource[:name]}"], @resource[:cib])
       end
@@ -265,7 +265,7 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
     else
       if @property_hash[:promotable] == :false && @property_hash[:existing_promotable] == :true
         if Gem::Version.new(self.class.version) >= Gem::Version.new('0.10.0')
-          self.class.run_command_in_cib([command(:pcs), pcs_subcommand, 'delete', '--force', "#{@property_hash[:name]}"], @resource[:cib])
+          self.class.run_command_in_cib([command(:pcs), pcs_subcommand, 'delete', '--force', "#{@property_hash[:name]}-clone"], @resource[:cib])
         else
           self.class.run_command_in_cib([command(:pcs), pcs_subcommand, 'delete', '--force', "ms_#{@property_hash[:name]}"], @resource[:cib])
         end
@@ -286,7 +286,7 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
       self.class.run_command_in_cib(cmd, @resource[:cib])
       if @property_hash[:promotable] == :true
         if Gem::Version.new(self.class.version) >= Gem::Version.new('0.10.0')
-          cmd = [command(:pcs), pcs_subcommand, 'update', "#{@property_hash[:name]}"]
+          cmd = [command(:pcs), pcs_subcommand, 'update', "#{@property_hash[:name]}-clone"]
         else
           cmd = [command(:pcs), pcs_subcommand, 'update', "ms_#{@property_hash[:name]}"]
         end
