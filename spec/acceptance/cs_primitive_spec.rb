@@ -21,6 +21,15 @@ japvs+0tdy9iwHj3z1ZME2Ntm/5TzG537e7Hb2zogatM9aBTUAWlZ1tpoaXuTH52
 J76GtqoIOh+CTeY/BMwBotdQdgeR0zvjE9FuLWkhTmRtVFhbVIzJbFlFuYq5d3LH
 NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
   File.open('/tmp/ca.pem', 'w') { |f| f.write(cert) }
+  promotable_metadata_name = if fact('default_provider') == 'pcs'
+                               if Gem::Version.new(fact('pcs_version')) < Gem::Version.new('0.10.0')
+                                 'master'
+                               else
+                                 'promotable'
+                               end
+                             else
+                              'master'
+                             end
   it 'with defaults' do
     pp = <<-EOS
       file { '/tmp/ca.pem':
@@ -49,7 +58,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
           { 'stop' => { 'interval' => '0s', 'timeout' => '60s', 'on-fail' => 'block' } },
           { 'notify' => { 'interval' => '0s', 'timeout' => '60s' } },
         ],
-        ms_metadata => { 'master-max' => '1', 'master-node-max' => '1', 'clone-max' => '2', 'clone-node-max' => '1', 'notify' => 'true' },
+        ms_metadata => { '#{promotable_metadata_name}-max' => '1', '#{promotable_metadata_name}-node-max' => '1', 'clone-max' => '2', 'clone-node-max' => '1', 'notify' => 'true' },
       }
     EOS
 
@@ -62,8 +71,12 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
   end
 
   it 'creates the resources' do
-    command = if fact('osfamily') == 'RedHat'
-                'pcs resource show'
+    command = if fact('default_provider') == 'pcs'
+                if Gem::Version.new(fact('pcs_version')) < Gem::Version.new('0.10.0')
+                  'pcs resource show'
+                else
+                  'pcs resource status'
+                end
               else
                 'crm_resource --list'
               end
@@ -89,7 +102,7 @@ NWyN0RsTXFaqowV1/HSyvfD7LoF/CrmN5gOAM3Ierv/Ti9uqGVhdGBd/kw=='
           { 'stop' => { 'interval' => '0s', 'timeout' => '60s', 'on-fail' => 'block' } },
           { 'notify' => { 'interval' => '0s', 'timeout' => '60s' } },
         ],
-        ms_metadata => { 'master-max' => '1', 'master-node-max' => '1', 'clone-max' => '2', 'clone-node-max' => '1', 'notify' => 'true' },
+        ms_metadata => { '#{promotable_metadata_name}-max' => '1', '#{promotable_metadata_name}-node-max' => '1', 'clone-max' => '2', 'clone-node-max' => '1', 'notify' => 'true' },
       }
     EOS
 

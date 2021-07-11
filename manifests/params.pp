@@ -38,10 +38,37 @@ class corosync::params {
     }
 
     'Debian': {
-      $package_crmsh  = true
-      $package_pcs    = false
-      $package_fence_agents = false
-      $package_install_options = undef
+      case $facts['os']['name'] {
+        'Debian': {
+          if Numeric($facts['os']['release']['major']) > 9 {
+            $package_crmsh = false
+            $package_pcs = true
+            $package_fence_agents = false
+            $package_install_options = undef
+          } else {
+            $package_crmsh  = true
+            $package_pcs    = false
+            $package_fence_agents = false
+            $package_install_options = undef
+          }
+        }
+        'Ubuntu': {
+          if Numeric($facts['os']['release']['major']) > 14 {
+            $package_crmsh = false
+            $package_pcs = true
+            $package_fence_agents = false
+            $package_install_options = undef
+          } else {
+            $package_crmsh  = true
+            $package_pcs    = false
+            $package_fence_agents = false
+            $package_install_options = undef
+          }
+        }
+        default: {
+          fail("Unsupported flavour of ${facts['os']['family']}: ${facts['os']['name']}")
+        }
+      }
     }
 
     'Suse': {

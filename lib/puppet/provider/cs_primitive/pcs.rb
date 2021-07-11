@@ -142,7 +142,11 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
       @property_hash[:promotable] = should
     when :false
       @property_hash[:promotable] = should
-      self.class.run_command_in_cib([command(:pcs), 'resource', 'delete', "ms_#{@resource[:name]}"], @resource[:cib])
+      if Gem::Version.new(self.class.version) >= Gem::Version.new('0.10.0')
+        self.class.run_command_in_cib([command(:pcs), 'resource', 'delete', "#{@resource[:name]}"]-clone, @resource[:cib])
+      else
+        self.class.run_command_in_cib([command(:pcs), 'resource', 'delete', "ms_#{@resource[:name]}"], @resource[:cib])
+      end
     end
   end
 
@@ -229,21 +233,21 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
     end
 
     if @property_hash[:existing_resource] == :false || force_reinstall == :true
-      cmd = if Facter.value(:osfamily) == 'RedHat' && Facter.value(:operatingsystemmajrelease).to_s == '7'
-              [command(:pcs), pcs_subcommand, 'create', '--force', '--no-default-ops', (@property_hash[:name]).to_s]
-            else
-              cmd = [command(:pcs), pcs_subcommand, 'create', '--force', (@property_hash[:name]).to_s]
-            end
+      cmd = [command(:pcs), pcs_subcommand, 'create', '--force', '--no-default-ops', (@property_hash[:name]).to_s]
       cmd << resource_type
       cmd += parameters unless parameters.nil?
       cmd += operations unless operations.nil?
       cmd += utilization unless utilization.nil?
       cmd += metadatas unless metadatas.nil?
       self.class.run_command_in_cib(cmd, @resource[:cib])
-      # if we are using a master/slave resource, prepend ms_ before its name
-      # and declare it as a master/slave resource
+      # if we are using a multistate/promotable resource, prepend ms_ before its name
+      # and declare it as a multistate/promotable resource
       if @property_hash[:promotable] == :true
-        cmd = [command(:pcs), pcs_subcommand, 'master', "ms_#{@property_hash[:name]}", (@property_hash[:name]).to_s]
+        if Gem::Version.new(self.class.version) >= Gem::Version.new('0.10.0')
+          cmd = [command(:pcs), pcs_subcommand, 'promotable', (@property_hash[:name]).to_s]
+        else
+          cmd = [command(:pcs), pcs_subcommand, 'master', "ms_#{@property_hash[:name]}", (@property_hash[:name]).to_s]
+        end
         unless @property_hash[:ms_metadata].empty?
           cmd << 'meta'
           @property_hash[:ms_metadata].each_pair do |k, v|
@@ -260,7 +264,11 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
       end
     else
       if @property_hash[:promotable] == :false && @property_hash[:existing_promotable] == :true
-        self.class.run_command_in_cib([command(:pcs), pcs_subcommand, 'delete', '--force', "ms_#{@property_hash[:name]}"], @resource[:cib])
+        if Gem::Version.new(self.class.version) >= Gem::Version.new('0.10.0')
+          self.class.run_command_in_cib([command(:pcs), pcs_subcommand, 'delete', '--force', "#{@property_hash[:name]}-clone"], @resource[:cib])
+        else
+          self.class.run_command_in_cib([command(:pcs), pcs_subcommand, 'delete', '--force', "ms_#{@property_hash[:name]}"], @resource[:cib])
+        end
       end
       @property_hash[:existing_operations].reject { |op| @property_hash[:operations].include?(op) }.each do |o|
         cmd = [command(:pcs), pcs_subcommand, 'op', 'remove', (@property_hash[:name]).to_s]
@@ -277,7 +285,11 @@ Puppet::Type.type(:cs_primitive).provide(:pcs, parent: PuppetX::Voxpupuli::Coros
       cmd += metadatas unless metadatas.nil?
       self.class.run_command_in_cib(cmd, @resource[:cib])
       if @property_hash[:promotable] == :true
-        cmd = [command(:pcs), pcs_subcommand, 'update', "ms_#{@property_hash[:name]}"]
+        if Gem::Version.new(self.class.version) >= Gem::Version.new('0.10.0')
+          cmd = [command(:pcs), pcs_subcommand, 'update', "#{@property_hash[:name]}-clone"]
+        else
+          cmd = [command(:pcs), pcs_subcommand, 'update', "ms_#{@property_hash[:name]}"]
+        end
         unless @property_hash[:ms_metadata].empty? && @property_hash[:existing_ms_metadata].empty?
           cmd << 'meta'
           @property_hash[:ms_metadata].each_pair do |k, v|
